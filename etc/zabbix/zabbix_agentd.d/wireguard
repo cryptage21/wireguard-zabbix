@@ -1,0 +1,38 @@
+#!/bin/bash
+
+interfaces()
+{
+interfaces=`/usr/bin/wg show interfaces`
+for int in ${interfaces}
+do
+	echo "{\"data\":[{\"{#WGINTERFACE}\":\"${int}\"}]}"
+done
+}
+
+peers()
+{
+interfaces=`/usr/bin/wg show all listen-port |awk '{print $1}'`
+#echo "{"
+#echo "\"data\":["
+for int in ${interfaces}
+do
+	for peer in `/usr/bin/wg show ${int} peers | awk '{print $1}' | cut -c1-10 | tr '[:upper:]' '[:lower:]'`
+		do
+			peers="$peers,"'{"{#PEER}":"'${peer}'","{#INTERFACE}":"'${int}'"}'
+		done
+done
+echo '{"data":['${peers#,}']}'
+#echo "]"
+#echo "}"
+}
+
+case $1 in 
+	INTERFACES)
+		interfaces
+		;;
+	PEERS)
+		peers
+		;;
+esac
+
+exit 0

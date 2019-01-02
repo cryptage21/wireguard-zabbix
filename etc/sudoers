@@ -1,0 +1,3 @@
+zabbix ALL=(ALL) NOPASSWD: /etc/zabbix/zabbix_agentd.d/wireguard INTERFACES
+zabbix ALL=(ALL) NOPASSWD: /etc/zabbix/zabbix_agentd.d/wireguard PEERS
+zabbix ALL=(ALL) NOPASSWD: /usr/bin/wg show *
