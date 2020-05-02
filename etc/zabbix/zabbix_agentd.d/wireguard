@@ -15,7 +15,7 @@ peers()
 interfaces=$(/usr/bin/wg show all listen-port |awk '{print $1}')
 for int in ${interfaces}
 do
-	for peer in `/usr/bin/wg show ${int} peers | awk '{print $1}' | cut -c1-10 | tr '[:upper:]' '[:lower:]'`
+	for peer in $(/usr/bin/wg show ${int} peers | awk '{print $1}' | cut -c1-10 | tr '[:upper:]' '[:lower:]')
 		do
 			peers="${peers},"'{"{#PEER}":"'${peer}'","{#INTERFACE}":"'${int}'"}'
 		done
