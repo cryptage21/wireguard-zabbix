@@ -2,18 +2,17 @@
 
 interfaces()
 {
-interfaces=`/usr/bin/wg show interfaces`
-for int in ${interfaces}
+interfaces=$(/usr/bin/wg show interfaces)
+for int in ${interfaces[*]}
 do
-	echo "{\"data\":[{\"{#WGINTERFACE}\":\"${int}\"}]}"
+	ifaces="$ifaces,"'{"{#WGINTERFACE}":"'${int}'"}'
 done
+echo '{"data":['${ifaces#,}']}'
 }
 
 peers()
 {
 interfaces=`/usr/bin/wg show all listen-port |awk '{print $1}'`
-#echo "{"
-#echo "\"data\":["
 for int in ${interfaces}
 do
 	for peer in `/usr/bin/wg show ${int} peers | awk '{print $1}' | cut -c1-10 | tr '[:upper:]' '[:lower:]'`
@@ -22,8 +21,6 @@ do
 		done
 done
 echo '{"data":['${peers#,}']}'
-#echo "]"
-#echo "}"
 }
 
 case $1 in 
@@ -32,6 +29,10 @@ case $1 in
 		;;
 	PEERS)
 		peers
+		;;
+	*)
+		echo "Usage: $(basename "$0") [PEERS | INTERFACES]"
+		exit 1;
 		;;
 esac
 
